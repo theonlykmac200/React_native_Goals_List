@@ -1,5 +1,5 @@
-import {useState} from 'react';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, Text, View, Button, TextInput, ScrollView, FlatList } from 'react-native';
 
 export default function App() {
 
@@ -8,24 +8,33 @@ export default function App() {
   function goalInputHandler(enteredText) {
     setEnteredGoalText(enteredText);
   }
-function addGoalHandler() {
-  setCourseGoals(currentCourseGoals => [
-    ...currentCourseGoals, 
-    enteredGoalText,
-  ]); 
+  function addGoalHandler() {
+    setCourseGoals(currentCourseGoals => [
+      ...currentCourseGoals,
+      {text: enteredGoalText, key: Math.random().toString()},
+    ]);
 
-}
+  }
   return (
     <View style={styles.appContainer}>
       <View style={styles.inputContainer}>
-        <TextInput style={styles.textInput} placeholder="Your Course Goal" onChangeText={goalInputHandler}/>
-        <Button title="Add Goal" onPress={addGoalHandler}/>
+        <TextInput style={styles.textInput} placeholder="Your Course Goal" onChangeText={goalInputHandler} />
+        <Button title="Add Goal" onPress={addGoalHandler} />
       </View>
       <View style={styles.goalContainer}>
-        {courseGoals.map((goal) => <Text key={goal}>{goal}</Text>)}
-        
-
+        <FlatList
+          data={courseGoals}
+          renderItem={(itemData) => {
+            return (
+              <View style={styles.goalItem}>
+                <Text style={styles.goalText}>{itemData.item.text}</Text>
+              </View>
+            );
+          }}
+          alwaysBounceVertical={false}
+        />
       </View>
+
     </View>
   );
 }
@@ -35,8 +44,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 50,
     paddingHorizontal: 16,
-  
-  
+
+
   },
   inputContainer: {
     flex: 1,
@@ -58,4 +67,14 @@ const styles = StyleSheet.create({
     flex: 3,
 
   },
+  goalItem: {
+    margin: 8,
+    padding: 8,
+    borderRadius: 6,
+    backgroundColor: "#5e0acc",
+
+  },
+  goalText: {
+    color: "white",
+  }
 });
